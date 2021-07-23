@@ -1,6 +1,6 @@
 #!/bin/sh
 ctrimg=deno
-denover=1.12.1
+denover=1.11.2
 ctr=$(buildah from registry.access.redhat.com/ubi8/ubi-minimal)
 mountpoint=$(buildah mount $ctr)
 mkdir -p $mountpoint/projects/.deno
@@ -12,13 +12,11 @@ buildah run --isolation rootless $ctr /bin/sh -c "microdnf update; \
 microdnf -y install unzip; \
 curl -fsSL https://deno.land/x/install/install.sh | sh -s v${denover}; \
 microdnf clean all;"
-buildah config --author "Luke Dary" --created-by "kamiquasi" --label name="${ctrimg}" $ctr
-buildah commit --squash $ctr $ctrimg
-buildah push $ctrimg docker://quay.io/chapeaux/deno:$denover
-buildah push $ctrimg docker://quay.io/chapeaux/deno:latest
 buildah config --entrypoint "sleep infinity" $ctr
+buildah config --author "Luke Dary" --created-by "ldary" --label name="${ctrimg}" $ctr
+buildah commit --squash $ctr $ctrimg
 buildah unmount $ctr
 buildah commit --squash $ctr $ctrimg
-buildah push $ctrimg docker://quay.io/chapeaux/deno-che:$denover
-buildah push $ctrimg docker://quay.io/chapeaux/deno-che:latest
+buildah push $ctrimg docker://quay.io/ldary/deno-crw:$denover
+buildah push $ctrimg docker://quay.io/ldary/deno-crw:latest
 buildah rm $ctr
