@@ -1,0 +1,12 @@
+domain: cpx.chapeaux.lab
+network: 10.10.10.0
+router: 10.10.10.1
+bastion-ip: 10.10.10.10
+netmask: 255.255.255.0
+sub-domain-configs:
+- name: dev
+  router-edge-ip: 10.10.10.2
+  router-ip: 10.10.11.1
+  network: 10.10.11.0
+  netmask: 255.255.255.0
+  cluster-config-file: /home/ldary/rh/chapeaux/cncpx/lab/lab-config/dev-cluster.yaml

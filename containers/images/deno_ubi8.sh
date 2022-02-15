@@ -1,6 +1,6 @@
 #!/bin/sh
 ctrimg=deno
-denover=1.15.3
+denover=1.18.3
 ctr=$(buildah from registry.access.redhat.com/ubi8/ubi-minimal)
 mountpoint=$(buildah mount $ctr)
 mkdir -p $mountpoint/projects/.deno

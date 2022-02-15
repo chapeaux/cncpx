@@ -1,0 +1,17 @@
+cluster-name: okd4
+secret-file: /home/ldary/rh/chapeaux/cncpx/lab/pull_secret.json
+local-registry: nexus.cpx.chapeaux.lab:5001
+remote-registry: quay.io/openshift/okd
+bootstrap:
+  kvm-host: kvm-host01
+  memory: 12288
+  cpu: 4
+  root_vol: 50
+control-plane:
+  memory: 20480
+  cpu: 6
+  root_vol: 100
+  kvm-hosts:
+  - kvm-host01
+  - kvm-host01
+  - kvm-host01
