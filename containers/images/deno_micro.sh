@@ -1,6 +1,6 @@
 #!/bin/sh
 ctrimg=deno-micro
-denover=1.25.0
+denover=1.25.1
 ctr=$(buildah from registry.access.redhat.com/ubi8/ubi-micro)
 mountpoint=$(buildah mount $ctr)
 dnf install --installroot $mountpoint \
