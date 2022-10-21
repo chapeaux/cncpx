@@ -9,7 +9,7 @@ dnf install --installroot $mountpoint \
 --nodocs -y unzip libgcc libstdc++ glib2 nss libxcb \
 atk at-spi2-atk cups libdrm libXcomposite libXdamage mesa-libgbm \
 libxkbcommon pango alsa-lib
-buildah config --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
+buildah config --env CHROME_PATH=/usr/local/bin/chrome --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
 
 # NODE INSTALLATION
 NODE_VER=14.20.0
