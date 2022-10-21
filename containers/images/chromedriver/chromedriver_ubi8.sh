@@ -46,7 +46,7 @@ ln -s $mountpoint/usr/src/chrome-linux/chrome $mountpoint/usr/local/bin/chrome
 ln -s $mountpoint/usr/src/chromedriver_linux64/chromedriver $mountpoint/usr/local/bin/chromedriver
 buildah commit --squash $ctr $ctrimg
 buildah config --author "Luke Dary" --created-by "kamiquasi" --label name="${ctrimg}" $ctr
-buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:$NODE_VER
+buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:$REVISION
 buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:latest
 buildah unmount $ctr
 buildah rm $ctr
