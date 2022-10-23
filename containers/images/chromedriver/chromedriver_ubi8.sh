@@ -9,7 +9,7 @@ dnf install --installroot $mountpoint \
 --nodocs -y unzip libgcc libstdc++ glib2 nss libxcb \
 atk at-spi2-atk cups libdrm libXcomposite libXdamage mesa-libgbm \
 libxkbcommon pango alsa-lib
-buildah config --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
+buildah config --env CHROME_PATH=/usr/local/bin/chrome --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
 
 # NODE INSTALLATION
 NODE_VER=14.20.0
@@ -46,7 +46,7 @@ ln -s $mountpoint/usr/src/chrome-linux/chrome $mountpoint/usr/local/bin/chrome
 ln -s $mountpoint/usr/src/chromedriver_linux64/chromedriver $mountpoint/usr/local/bin/chromedriver
 buildah commit --squash $ctr $ctrimg
 buildah config --author "Luke Dary" --created-by "kamiquasi" --label name="${ctrimg}" $ctr
-buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:$NODE_VER
+buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:$REVISION
 buildah push $ctrimg docker://quay.io/chapeaux/chromedriver-ubi:latest
 buildah unmount $ctr
 buildah rm $ctr
