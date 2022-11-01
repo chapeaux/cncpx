@@ -1,10 +1,10 @@
 #!/bin/sh
 ctrimg=nodejs
-ctr=$(buildah from registry.access.redhat.com/ubi8/ubi-minimal)
+ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-minimal)
 mountpoint=$(buildah mount $ctr)
 #mkdir -p $mountpoint/nodejs/
 buildah run --isolation rootless $ctr /bin/sh -c "microdnf update; \
-microdnf -y install curl tar gzip libgcc libstdc++; \
+microdnf -y install curl-minimal tar gzip libgcc libstdc++; \
 microdnf clean all;"
 #dnf install --installroot $mountpoint \
 #--releasever 8 \
@@ -12,7 +12,7 @@ microdnf clean all;"
 #--nodocs -y libgcc libstdc++
 #unzip glib2 nss libxcb atk at-spi2-atk cups libdrm libXcomposite libXdamage mesa-libgbm \
 #libxkbcommon pango alsa-lib
-buildah config --env PATH=$PATH:/node/bin: $ctr
+buildah config --env PATH=$PATH:/usr/src/node/bin $ctr
 
 # NODE INSTALLATION
 NODE_VER=14.20.0

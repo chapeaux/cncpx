@@ -9,17 +9,17 @@ dnf install --installroot $mountpoint \
 --nodocs -y unzip libgcc libstdc++ glib2 nss libxcb \
 atk at-spi2-atk cups libdrm libXcomposite libXdamage mesa-libgbm \
 libxkbcommon pango alsa-lib
-buildah config --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
-
-# NODE INSTALLATION
-NODE_VER=14.20.0
-NODE_URL="https://nodejs.org/download/release/v$NODE_VER/node-v$NODE_VER-linux-x64.tar.gz"
-NODE_FILE="node-v$NODE_VER.tar.gz"
-echo "fetching $NODE_URL"
-curl -# $NODE_URL > $mountpoint/$NODE_FILE
-tar -xvzf $mountpoint/$NODE_FILE -C $mountpoint/usr/src/
-rm -R $mountpoint/$NODE_FILE
-mv $mountpoint/usr/src/node-v$NODE_VER-linux-x64 $mountpoint/usr/src/node
+buildah config --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:$ctr
+# buildah config --env PATH=$PATH:/usr/src/chrome-linux:/usr/src/chromedriver_linux64:/usr/src/node/bin: $ctr
+# # NODE INSTALLATION
+# NODE_VER=14.20.0
+# NODE_URL="https://nodejs.org/download/release/v$NODE_VER/node-v$NODE_VER-linux-x64.tar.gz"
+# NODE_FILE="node-v$NODE_VER.tar.gz"
+# echo "fetching $NODE_URL"
+# curl -# $NODE_URL > $mountpoint/$NODE_FILE
+# tar -xvzf $mountpoint/$NODE_FILE -C $mountpoint/usr/src/
+# rm -R $mountpoint/$NODE_FILE
+# mv $mountpoint/usr/src/node-v$NODE_VER-linux-x64 $mountpoint/usr/src/node
 
 # CHROME AND CHROMEDRIVER INSTALLATION
 # FROM https://github.com/scheib/chromium-latest-linux
