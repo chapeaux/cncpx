@@ -1,10 +1,10 @@
 #!/bin/sh
 ctrimg=deno-micro
-denover=1.26.1
-ctr=$(buildah from registry.access.redhat.com/ubi8/ubi-micro)
+denover=1.28.0
+ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-micro)
 mountpoint=$(buildah mount $ctr)
 dnf install --installroot $mountpoint \
---releasever 8 \
+--releasever 9 \
 --setopt install_weak_deps=false \
 --nodocs -y unzip libgcc
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=$mountpoint/usr/local sh
