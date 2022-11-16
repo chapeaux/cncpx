@@ -14,21 +14,26 @@ ZIP_FILE="${REVISION}-chrome-linux.zip"
 CR_ZIP_URL="https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F$REVISION%2Fchromedriver_linux64.zip?alt=media"
 CR_ZIP_FILE="${REVISION}-chromedriver-linux64.zip"
 
-
 buildah run --isolation rootless $ctr /bin/sh -c "microdnf -y update; \
-microdnf -y --nodocs install curl-minimal tar unzip libgcc libstdc++ glib2 nss libxcb \
-atk at-spi2-atk cups libdrm libXcomposite libXdamage mesa-libgbm \
-libxkbcommon pango alsa-lib; \
+microdnf -y --nodocs install curl-minimal tar gzip unzip libgcc libstdc++ glib2 nss libxcb \
+atk at-spi2-atk cups libdrm libXcomposite libXdamage libXrandr mesa-libgbm \
+libxkbcommon pango alsa-lib git make; \
 microdnf clean all; \
-rm -rf /root/$REVISION; \
-mkdir /root/$REVISION; \
-curl -# $ZIP_URL > /root/$REVISION/$ZIP_FILE; \
-curl -# $CR_ZIP_URL > /root/$REVISION/$CR_ZIP_FILE; \
-unzip /root/$REVISION/$ZIP_FILE -d /usr/src; \
-unzip /root/$REVISION/$CR_ZIP_FILE -d /usr/src; \
-rm -rf /root/$REVISION; \
-ln -s /usr/src/chrome-linux/chrome /usr/local/bin/chrome; \
-ln -s /usr/src/chromedriver_linux64/chromedriver /usr/local/bin/chromedriver;"
+useradd -m -g root cruser;"
+
+buildah run --user cruser --isolation rootless $ctr /bin/sh -c "cd ~; \
+rm -rf ~/src/$REVISION; \
+mkdir -p ~/src/$REVISION; \
+curl -# $ZIP_URL > ~/src/$REVISION/$ZIP_FILE; \
+unzip ~/src/$REVISION/$ZIP_FILE -d ~/src; \
+curl -# $CR_ZIP_URL > ~/src/$REVISION/$CR_ZIP_FILE; \
+unzip ~/src/$REVISION/$CR_ZIP_FILE -d ~/src; \
+rm -rf ~/src/$REVISION; \
+mkdir -p ~/bin; \
+ln -s ~/src/chrome-linux/chrome ~/bin/chrome; \
+ln -s ~/src/chromedriver_linux64/chromedriver ~/bin/chromedriver;"
+
+buildah config --user cruser --workingdir /home/cruser $ctr
 
 # ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-micro)
 # mountpoint=$(buildah mount $ctr)
