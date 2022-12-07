@@ -8,15 +8,14 @@ GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v$GECK
 # FROM https://github.com/scheib/chromium-latest-linux
 
 buildah run --isolation rootless $ctr /bin/sh -c "microdnf -y update; \
-microdnf -y --nodocs install wget tar; \
+microdnf -y --nodocs install wget tar gzip bzip2 shadow-utils; \
 microdnf clean all; \
-useradd -m -g root geckousr;"
-
-buildah run --user geckousr --isolation rootless $ctr /bin/sh -c "cd ~; \
+useradd -m -g root geckousr; \
 wget -qO- \"https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US\" | tar -jx -C /usr/local/; \
 ln -s /usr/local/firefox/firefox /usr/bin/firefox; \
-wget -qO- $GECKODRIVER_URL | tar xvz -C /usr/local/firefox/
-ln -s /usr/local/firefox/geckodriver /usr/bin/geckodriver;"
+wget -qO- $GECKODRIVER_URL | tar xvz -C /usr/local/firefox/; \
+ln -s /usr/local/firefox/geckodriver /usr/bin/geckodriver; \
+echo '127.0.0.1    localhost' >> /etc/hosts;"
 
 buildah config --user geckousr --workingdir /home/geckousr $ctr
 
