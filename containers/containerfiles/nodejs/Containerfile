@@ -1,0 +1,3 @@
+FROM registry.access.redhat.com/ubi8/nodejs-14-minimal
+
+RUN npm init -y && npm i @axe-core/cli

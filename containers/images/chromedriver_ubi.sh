@@ -33,7 +33,7 @@ mkdir -p ~/bin; \
 ln -s ~/src/chrome-linux/chrome ~/bin/chrome; \
 ln -s ~/src/chromedriver_linux64/chromedriver ~/bin/chromedriver;"
 
-buildah config --user cruser --workingdir /home/cruser $ctr
+buildah config --user cruser --workingdir /home/cruser/bin --entrypoint './chromedriver --whitelisted-ips=""' $ctr
 
 # ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-micro)
 # mountpoint=$(buildah mount $ctr)
