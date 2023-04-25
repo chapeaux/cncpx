@@ -1,22 +1,32 @@
 #!/bin/sh
 
 # NODE INSTALLATION
-NODE_VER=14.20.0
+NODE_VER=20.0.0
 NODE_URL="https://nodejs.org/download/release/v$NODE_VER/node-v$NODE_VER-linux-x64.tar.gz"
 NODE_FILE="node-v$NODE_VER.tar.gz"
 
-ctrimg=nodejs
-ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-minimal)
-# mountpoint=$(buildah mount $ctr)
-#mkdir -p $mountpoint/nodejs/
-buildah run --isolation rootless $ctr /bin/sh -c "microdnf -y update; \
-microdnf -y install curl-minimal tar gzip libgcc libstdc++ git make; \
-microdnf clean all; 
-useradd -m -g root nodeusr;"
-buildah run --user nodeusr --isolation rootless $ctr /bin/sh -c "cd ~; \
-curl -sL https://bit.ly/n-install | bash -s -- -y $NODE_VER;"
+ctrimg=nodejs-micro
+ctr=$(buildah from registry.access.redhat.com/ubi9/ubi-micro)
+mountpoint=$(buildah mount $ctr)
+dnf install --installroot $mountpoint \
+--releasever 9 \
+--setopt install_weak_deps=false \
+--nodocs -y libgcc libstdc++
+curl -o $mountpoint/tmp/$NODE_FILE $NODE_URL;
+tar -xzf $mountpoint/tmp/$NODE_FILE -C $mountpoint/usr/local/lib;
+rm -R $mountpoint/tmp/$NODE_FILE;
+#ln -sf $mountpoint/usr/local/lib/node-v$NODE_VER-linux-x64/bin/node $mountpoint/usr/local/bin;
+cp $mountpoint/usr/local/lib/node-v$NODE_VER-linux-x64/bin/* $mountpoint/usr/local/bin;
 
-buildah config --user nodeusr --workingdir /home/nodeusr
+# mkdir -p $mountpoint/nodejs/
+# buildah run --isolation rootless $ctr /bin/sh -c "microdnf -y update; \
+# microdnf -y install curl-minimal tar gzip libgcc libstdc++ git make; \
+# microdnf clean all; 
+# useradd -m -g root nodeusr;"
+# buildah run --user nodeusr --isolation rootless $ctr /bin/sh -c "cd ~; \
+# curl -sL https://bit.ly/n-install | N_PREFIX=~/.local bash -s -- -y $NODE_VER;"
+
+# buildah config --user nodeusr --workingdir /home/nodeusr $ctr
 # curl -# $NODE_URL > ~/$NODE_FILE; \
 # tar -xvzf ~/$NODE_FILE -C ~; \
 # rm -R ~/$NODE_FILE; \
@@ -37,7 +47,7 @@ buildah config --user nodeusr --workingdir /home/nodeusr
 
 buildah commit --squash $ctr $ctrimg
 buildah config --author "Luke Dary" --created-by "kamiquasi" --label name="${ctrimg}" $ctr
-#buildah push $ctrimg docker://quay.io/chapeaux/node-ubi:$NODE_VER
-#buildah push $ctrimg docker://quay.io/chapeaux/node-ubi:latest
+buildah push $ctrimg docker://quay.io/chapeaux/node-ubi:$NODE_VER
+buildah push $ctrimg docker://quay.io/chapeaux/node-ubi:latest
 buildah unmount $ctr
 buildah rm $ctr
